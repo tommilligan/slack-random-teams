@@ -5,5 +5,12 @@
   ],
   "plugins": [
     "transform-class-properties"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "istanbul"
+      ]
+    }
+  }
 }
