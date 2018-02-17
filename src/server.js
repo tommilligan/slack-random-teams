@@ -7,6 +7,7 @@ import rp from 'request-promise';
 import rid from 'readable-id';
 import { WebClient } from '@slack/client';
 
+import { RandomTeamsError } from './errors';
 import { shuffle, chunkArray } from './utils';
 
 // An access token (from your Slack app or custom integration - xoxp, xoxb, or xoxa)
@@ -27,6 +28,39 @@ router.get('/health', function(req, res) {
   res.sendStatus(200);
 });
 
+
+const delayedResponderFactory = (url) => {
+  const delayedResponder = (body) => {
+    const responseOptions = {
+      method: 'POST',
+      uri: url,
+      body: body,
+      json: true
+    };
+    return rp(responseOptions);
+  };
+  return delayedResponder;
+};
+
+let getUserName = (memberId) => {
+  const url = `https://slack.com/api/users.profile.get?token=${token}&user=${memberId}&pretty=1`;
+  return rp({
+    method: 'GET',
+    uri: url,
+    json: true
+  })
+    .then(res => {
+      return res.profile.real_name;
+    });
+};
+/*
+let getUserName = (memberId) => {
+  return web.users.profile.get(null, memberId)
+    .then(res => {
+      return res.profile.real_name;
+    });  
+}
+*/
 router.post('/random-teams', function(req, res) {
   const invocation = req.body;
 
@@ -37,32 +71,21 @@ router.post('/random-teams', function(req, res) {
 
   // Fire of a fast initial response
   const initialResponse = {
-    'response_type': 'in_channel',
-    'text': `Generating ${teamNames.length} teams...`
+    response_type: 'in_channel',
+    text: `Generating ${teamNames.length} teams...`
   };
   res.json(initialResponse);
 
   // Set up options for delayed messaging
-  let responseOptions = {
-    method: 'POST',
-    uri: invocation.response_url,
-    body: {},
-    json: true
-  };
+  const delayedResponder = delayedResponderFactory(invocation.response_url);
 
   web.channels.info(channel_id)
     .then(res => {
-      // Channel info
       return res.channel.members;
     })
     .then(memberIds => {
       return Promise.all(memberIds.map(memberId => {
-        return web.users.profile.get(memberId)
-          .then(res => {
-            console.log(memberId);
-            console.log(res);
-            return res.profile.real_name;
-          });
+        return getUserName(memberId);
       }));
     })
     .then(memberNames => {
@@ -79,26 +102,24 @@ router.post('/random-teams', function(req, res) {
       });
 
       const response = {
-        'response_type': 'in_channel',
-        'text': lines.join('\n')
+        response_type: 'in_channel',
+        text: lines.join('\n')
       };
-      responseOptions.body = response;
-      rp(responseOptions);
+      delayedResponder(response);
     })
     .catch(e => {
       const errorId = rid();
-      const response = {
-        'response_type': 'in_channel',
-        'text': `Sorry, something went wrong. Ref: \`${errorId}\``
+      console.error(`Error generated with ref: ${errorId}`);
+      console.error(e);
+      let response = {
+        response_type: 'in_channel',
+        text: `Sorry, something went wrong.\nRef: \`${errorId}\``
       };
-      responseOptions.body = response;
-      rp(responseOptions)
+      delayedResponder(response)
         .catch(e => {
           console.error('Failed sending an error to the user');
           console.error(e);
         });
-      console.error(`Error generated with ref: ${errorId}`);
-      console.error(e);
     });
 });
 
