@@ -16,13 +16,19 @@ function shuffle(a) {
  * @param {Integer} len Number of chunks to split into
  */
 function chunkArray(arr, len) {
-  let chunks = Array(len).fill([]);
+  // initialise an array of arrays
+  // if there is a better way to do this, let me know
+  let chunks = [];
+  for(let i = 0; i < len; i++) {
+      chunks.push([]);
+  }
+
+  // iterate through array and push elements to chunks
   arr.forEach((el, i) => {
-    console.log(chunks)
     chunks[i % len].push(el);
   });
   return chunks;
-  }
+}
 
 module.exports = {
   shuffle,

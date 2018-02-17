@@ -59,16 +59,15 @@ router.post('/random-teams', function(req, res) {
       return Promise.all(memberIds.map(memberId => {
         return web.users.profile.get(memberId)
           .then(res => {
+            console.log(memberId)
+            console.log(res)
             return res.profile.real_name;
           });
       }))
     })
     .then(memberNames => {
-      console.log(memberNames)
       memberNames = shuffle(memberNames)
-      console.log(memberNames)
       const chunkedMembers = chunkArray(memberNames, teamNames.length)
-      console.log(chunkedMembers)
       // Format data and create lines
       var lines = [];
       lines.push("_Your teams are:_");
