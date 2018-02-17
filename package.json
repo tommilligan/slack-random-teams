@@ -39,6 +39,6 @@
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --require babel-core/register -R spec test/",
     "compile": "babel src -d dist",
     "build": "yarn flow && yarn compile && yarn coverage",
-    "dev": "nodemon -w src --exec \"babel-node src/server.js"
+    "dev": "nodemon -w src --exec \"babel-node src/server.js\""
   }
 }

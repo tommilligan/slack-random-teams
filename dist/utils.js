@@ -19,7 +19,7 @@ export function chunkArray(arr, len) {
   // initialise an array of arrays
   // if there is a better way to do this, let me know
   let chunks = [];
-  for(let i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++) {
     chunks.push([]);
   }
 
@@ -29,4 +29,3 @@ export function chunkArray(arr, len) {
   });
   return chunks;
 }
-  

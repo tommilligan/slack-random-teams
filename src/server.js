@@ -1,13 +1,13 @@
 // load .env file
 require('dotenv-safe').load();
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const rp = require('request-promise');
-const rid = require('readable-id');
-const { WebClient } = require('@slack/client');
+import express from 'express';
+import bodyParser from 'body-parser';
+import rp from 'request-promise';
+import rid from 'readable-id';
+import { WebClient } from '@slack/client';
 
-const { shuffle, chunkArray } = require('./utils');
+import { shuffle, chunkArray } from './utils';
 
 // An access token (from your Slack app or custom integration - xoxp, xoxb, or xoxa)
 const token = process.env.SLACK_OAUTH_TOKEN;
