@@ -7,7 +7,6 @@ import rp from 'request-promise';
 import rid from 'readable-id';
 import { WebClient } from '@slack/client';
 
-import { RandomTeamsError } from './errors';
 import { shuffle, chunkArray } from './utils';
 
 // An access token (from your Slack app or custom integration - xoxp, xoxb, or xoxa)
@@ -43,24 +42,12 @@ const delayedResponderFactory = (url) => {
 };
 
 let getUserName = (memberId) => {
-  const url = `https://slack.com/api/users.profile.get?token=${token}&user=${memberId}&pretty=1`;
-  return rp({
-    method: 'GET',
-    uri: url,
-    json: true
-  })
-    .then(res => {
-      return res.profile.real_name;
-    });
-};
-/*
-let getUserName = (memberId) => {
-  return web.users.profile.get(null, memberId)
+  return web.users.profile.get({user: memberId})
     .then(res => {
       return res.profile.real_name;
     });  
-}
-*/
+};
+
 router.post('/random-teams', function(req, res) {
   const invocation = req.body;
 
