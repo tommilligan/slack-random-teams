@@ -3,8 +3,8 @@ require('dotenv-safe').load();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const rp = require('request-promise')
-const rid = require('readable-id')
+const rp = require('request-promise');
+const rid = require('readable-id');
 const { WebClient } = require('@slack/client');
 
 const { shuffle, chunkArray } = require('./utils');
@@ -33,13 +33,13 @@ router.post('/random-teams', function(req, res) {
   // The text should be a space delimited list of teamnames
   const teamNames = invocation.text.split(' ');
   const channel_id = invocation.channel_id;
-  console.info(`Requested teams '${teamNames.join(", ")}' in channel ${channel_id}`)
+  console.info(`Requested teams '${teamNames.join(', ')}' in channel ${channel_id}`);
 
   // Fire of a fast initial response
   const initialResponse = {
-    "response_type": "in_channel",
-    "text": `Generating ${teamNames.length} teams...`
-  }
+    'response_type': 'in_channel',
+    'text': `Generating ${teamNames.length} teams...`
+  };
   res.json(initialResponse);
 
   // Set up options for delayed messaging
@@ -53,52 +53,52 @@ router.post('/random-teams', function(req, res) {
   web.channels.info(channel_id)
     .then(res => {
       // Channel info
-      return res.channel.members
+      return res.channel.members;
     })
     .then(memberIds => {
       return Promise.all(memberIds.map(memberId => {
         return web.users.profile.get(memberId)
           .then(res => {
-            console.log(memberId)
-            console.log(res)
+            console.log(memberId);
+            console.log(res);
             return res.profile.real_name;
           });
-      }))
+      }));
     })
     .then(memberNames => {
-      memberNames = shuffle(memberNames)
-      const chunkedMembers = chunkArray(memberNames, teamNames.length)
+      memberNames = shuffle(memberNames);
+      const chunkedMembers = chunkArray(memberNames, teamNames.length);
       // Format data and create lines
       var lines = [];
-      lines.push("_Your teams are:_");
+      lines.push('_Your teams are:_');
       teamNames.forEach((teamName , i) => {
         lines.push(`*${teamName}*`);
         chunkedMembers[i].forEach(memberName => {
           lines.push(memberName);
         });
-      })
+      });
 
       const response = {
-        "response_type": "in_channel",
-        "text": lines.join("\n")
-      }
+        'response_type': 'in_channel',
+        'text': lines.join('\n')
+      };
       responseOptions.body = response;
-      rp(responseOptions)
+      rp(responseOptions);
     })
     .catch(e => {
       const errorId = rid();
       const response = {
-        "response_type": "in_channel",
-        "text": `Sorry, something went wrong. Ref: \`${errorId}\``
+        'response_type': 'in_channel',
+        'text': `Sorry, something went wrong. Ref: \`${errorId}\``
       };
       responseOptions.body = response;
       rp(responseOptions)
         .catch(e => {
-          console.error("Failed sending an error to the user");
+          console.error('Failed sending an error to the user');
           console.error(e);
-        })
-      console.error(`Error generated with ref: ${errorId}`)
-      console.error(e)
+        });
+      console.error(`Error generated with ref: ${errorId}`);
+      console.error(e);
     });
 });
 

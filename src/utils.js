@@ -20,7 +20,7 @@ function chunkArray(arr, len) {
   // if there is a better way to do this, let me know
   let chunks = [];
   for(let i = 0; i < len; i++) {
-      chunks.push([]);
+    chunks.push([]);
   }
 
   // iterate through array and push elements to chunks
@@ -33,5 +33,5 @@ function chunkArray(arr, len) {
 module.exports = {
   shuffle,
   chunkArray
-}
+};
   
