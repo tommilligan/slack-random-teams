@@ -2,7 +2,7 @@
   "name": "slack-random-teams",
   "version": "0.1.0",
   "description": "Split a slack channel into random teams",
-  "main": "server.js",
+  "main": "src/server.js",
   "repository": "git@github.com:tommilligan/slack-random-teams",
   "author": "Tom Milligan <code@tommilligan.net>",
   "license": "Apache-2.0",
@@ -19,5 +19,8 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "mocha": "^5.0.1"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }
