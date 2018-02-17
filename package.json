@@ -1,32 +1,16 @@
 {
-  "name": "easy-peasy-bot",
-  "version": "1.0.0",
-  "description": "The awesomest bot evar.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DEGoodmanWilson/easy-peasy-bot-app.git"
-  },
-  "keywords": [
-    "slack",
-    "bot"
-  ],
-  "author": "D.E. Goodman-Wilson",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app/issues"
-  },
-  "homepage": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app#readme",
-  "engines": {
-    "node": "5.1.1"
-  },
+  "name": "slack-random-teams",
+  "version": "0.1.0",
+  "description": "Split a slack channel into random teams",
+  "main": "server.js",
+  "repository": "git@github.com:tommilligan/slack-random-teams",
+  "author": "Tom Milligan <code@tommilligan.net>",
+  "license": "Apache-2.0",
+  "private": false,
   "dependencies": {
-    "botkit": "0.2.2",
-    "botkit-storage-mongo": "^1.0.2",
-    "mongodb": "^1.4.39"
+    "@slack/client": "^3.16.0",
+    "body-parser": "^1.18.2",
+    "dotenv-safe": "^4.0.4",
+    "express": "^4.16.2"
   }
 }
