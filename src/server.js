@@ -7,14 +7,13 @@ import rp from 'request-promise';
 import rid from 'readable-id';
 import { WebClient } from '@slack/client';
 
-import { shuffle, chunkArray } from './utils';
+import { parseCommandText, randomlyAssign } from './logic';
 
 // An access token (from your Slack app or custom integration - xoxp, xoxb, or xoxa)
 const token = process.env.SLACK_OAUTH_TOKEN;
 const web = new WebClient(token);
 
 let app = express();
-const port = process.env.PORT || 3000;
 
 // for parsing application/json
 app.use(bodyParser.json());
@@ -28,17 +27,30 @@ router.get('/health', function(req, res) {
 });
 
 
-const delayedResponderFactory = (url) => {
-  const delayedResponder = (body) => {
-    const responseOptions = {
-      method: 'POST',
-      uri: url,
-      body: body,
-      json: true
-    };
-    return rp(responseOptions);
+/**
+ * Returns options for arequest JSON POST response
+ * @param {String} url 
+ * @param {Object} body 
+ */
+const response = (url, body) => {
+  const responseOptions = {
+    method: 'POST',
+    uri: url,
+    body: body,
+    json: true
   };
-  return delayedResponder;
+  return responseOptions;
+};
+
+/**
+ * Returns a closure for generating multiple JSON POST requests to the same URL
+ * @param {String} url 
+ */
+const delayedResponder = url => {
+  const delayedResponse = body => {
+    return response(url, body);
+  };
+  return delayedResponse;
 };
 
 let getUserName = (memberId) => {
@@ -51,58 +63,59 @@ let getUserName = (memberId) => {
 router.post('/random-teams', function(req, res) {
   const invocation = req.body;
 
-  // The text should be a space delimited list of teamnames
-  const teamNames = invocation.text.split(' ');
+  const teamNames = parseCommandText(invocation.text);
   const channel_id = invocation.channel_id;
   console.info(`Requested teams '${teamNames.join(', ')}' in channel ${channel_id}`);
 
-  // Fire of a fast initial response
-  const initialResponse = {
+  // Fire off a fast initial response
+  const initialBody = {
     response_type: 'in_channel',
     text: `Generating ${teamNames.length} teams...`
   };
-  res.json(initialResponse);
+  res.json(initialBody);
 
-  // Set up options for delayed messaging
-  const delayedResponder = delayedResponderFactory(invocation.response_url);
+  // Set up a factory for delayed responses
+  const delayedResponse = delayedResponder(invocation.response_url);
 
+  // Get information about the source channel
   web.channels.info(channel_id)
+    // Process the channel to get a list of usernames
     .then(res => {
-      return res.channel.members;
-    })
-    .then(memberIds => {
+      const memberIds = res.channel.members;
       return Promise.all(memberIds.map(memberId => {
         return getUserName(memberId);
       }));
     })
+    // Actually do team assignment
     .then(memberNames => {
-      memberNames = shuffle(memberNames);
-      const chunkedMembers = chunkArray(memberNames, teamNames.length);
+      const teams = randomlyAssign(teamNames, memberNames);
+      
       // Format data and create lines
       var lines = [];
       lines.push('_Your teams are:_');
-      teamNames.forEach((teamName , i) => {
+      teams.forEach(([teamName, memberNames]) => {
         lines.push(`*${teamName}*`);
-        chunkedMembers[i].forEach(memberName => {
+        memberNames.forEach(memberName => {
           lines.push(memberName);
         });
       });
 
-      const response = {
+      const body = {
         response_type: 'in_channel',
         text: lines.join('\n')
       };
-      delayedResponder(response);
+      rp(delayedResponse(body));
     })
+    // If we raise any errors, send a message back to the channel
     .catch(e => {
       const errorId = rid();
       console.error(`Error generated with ref: ${errorId}`);
       console.error(e);
-      let response = {
+      let body = {
         response_type: 'in_channel',
         text: `Sorry, something went wrong.\nRef: \`${errorId}\``
       };
-      delayedResponder(response)
+      rp(delayedResponse(body))
         .catch(e => {
           console.error('Failed sending an error to the user');
           console.error(e);
@@ -113,5 +126,4 @@ router.post('/random-teams', function(req, res) {
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
-app.listen(port);
-console.log('Magic happens on port ' + port);
+export default app;
