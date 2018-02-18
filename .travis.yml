@@ -12,7 +12,7 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn compile
-  - docker build -t slack-random-teams:latest
+  - docker build -t slack-random-teams .
   - docker tag slack-random-teams registry.heroku.com/slack-random-teams/web
   - docker login -u "$HEROKU_USER" -p "$HEROKU_API_KEY" registry.heroku.com
   - docker push registry.heroku.com/slack-random-teams/web
