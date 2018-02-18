@@ -7,20 +7,21 @@ import { delayedResponder } from './responses';
 import { formatTeams } from './formats';
 
 import { channelUserProfiles } from './api';
+import { verifySlack } from './middleware';
 
 const applyRoutes = app => {
-  // Get a router for our endpoints
-  let router = express.Router();
-  router.get('/health', function(req, res) {
+  // Metadata - open
+  let metadata = express.Router();
+  metadata.get('/health', function(req, res) {
     res.sendStatus(200);
   });
+  app.use('/api/metadata', metadata);
 
-  router.post('/random-teams', function(req, res) {
+  // Commands - require verification
+  let commands = express.Router();
+  commands.use(verifySlack);
+  commands.post('/random-teams', function(req, res) {
     const invocation = req.body;
-    if (invocation.token !== process.env.SLACK_VERIFICATION_TOKEN) {
-      // If not sent by Slack, return Unauthorized
-      res.sendStatus(401);
-    }
     const teamNames = parseCommandText(invocation.text);
     const channel_id = invocation.channel_id;
     console.info(`Requested teams '${teamNames.join(', ')}' in channel ${channel_id}`);
@@ -66,9 +67,7 @@ const applyRoutes = app => {
           });
       });
   });
-
-  // all of our routes will be prefixed with /api
-  app.use('/api', router);
+  app.use('/api/commands', commands);
 
   return app;
 };
