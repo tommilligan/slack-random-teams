@@ -7,18 +7,20 @@ node_js:
   - "9"
 install:
   - yarn
+  - mv .env.test .env
 script:
   - yarn test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - yarn compile
-  - docker build -t slack-random-teams .
-  - docker tag slack-random-teams registry.heroku.com/slack-random-teams/web
-  - docker login -u "$HEROKU_USER" -p "$HEROKU_API_KEY" registry.heroku.com
-  - docker push registry.heroku.com/slack-random-teams/web
+  - |
+    if [[ $TRAVIS_BRANCH == "master" ]]; then
+      yarn compile
+      docker build -t slack-random-teams .
+      docker tag slack-random-teams registry.heroku.com/slack-random-teams/web
+      docker login -u "$HEROKU_USER" -p "$HEROKU_API_KEY" registry.heroku.com
+      docker push registry.heroku.com/slack-random-teams/web
+    fi
 notifications:
   email: false
 cache:
   yarn: true
-env:
-  - SLACK_OAUTH_TOKEN=test SLACK_VERIFICATION_TOKEN=test
