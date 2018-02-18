@@ -23,8 +23,3 @@ export const randomlyAssign = (labels, members) => {
   });
   return assignments;
 };
-
-export default {
-  parseCommandText,
-  randomlyAssign
-};
