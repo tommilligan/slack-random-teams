@@ -7,3 +7,4 @@ describe('pass', function() {
     expect(subject).to.be.a('object');
   });
 });
+
