@@ -12,18 +12,9 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - yarn compile
-  - docker build -t tommilligan/slack-random-teams
+  - docker build -t tommilligan/slack-random-teams/web:latest
   - docker login -u "$HEROKU_USER" -p "$HEROKU_API_KEY" registry.heroku.com
-  - docker push tommilligan/slack-random-teams
-deploy:
-  - provider: npm
-    skip_cleanup: true
-    email: code@tommilligan.net
-    api_key: $NPM_API_KEY
-    on:
-      branch: master
-      tags: true
-      condition: $TRAVIS_NODE_VERSION = 8
+  - docker push registry.heroku.com/slack-random-teams/web
 notifications:
   email: false
 cache:
