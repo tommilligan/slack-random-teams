@@ -17,7 +17,10 @@ const applyRoutes = app => {
 
   router.post('/random-teams', function(req, res) {
     const invocation = req.body;
-
+    if (invocation.token !== process.env.SLACK_VERIFICATION_TOKEN) {
+      // If not sent by Slack, return Unauthorized
+      res.sendStatus(401);
+    }
     const teamNames = parseCommandText(invocation.text);
     const channel_id = invocation.channel_id;
     console.info(`Requested teams '${teamNames.join(', ')}' in channel ${channel_id}`);
