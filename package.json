@@ -38,9 +38,9 @@
   },
   "scripts": {
     "start": "node dist/server.js",
+    "compile": "babel src -d dist",
     "type": "yarn flow",
     "test": "cross-env NODE_ENV=test nyc mocha -R spec test/",
-    "compile": "babel src -d dist",
     "dev": "nodemon -w src --exec \"babel-node src/server.js\"",
     "prepublish": "npm run build",
     "build": "yarn flow && yarn compile && yarn coverage"
