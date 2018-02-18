@@ -26,6 +26,7 @@ deploy:
       condition: $TRAVIS_NODE_VERSION = 8
 notifications:
   email: false
+cache:
+  yarn: true
 env:
-  - SLACK_OAUTH_TOKEN=test
-  - SLACK_VERIFICATION_TOKEN=test
+  - SLACK_OAUTH_TOKEN=test SLACK_VERIFICATION_TOKEN=test
