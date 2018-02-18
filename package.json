@@ -41,8 +41,7 @@
     "compile": "babel src -d dist",
     "type": "yarn flow",
     "test": "cross-env NODE_ENV=test nyc mocha -R spec test/",
-    "dev": "nodemon -w src --exec \"babel-node src/server.js\"",
-    "prepublish": "npm run build"
+    "dev": "nodemon -w src --exec \"babel-node src/server.js\""
   },
   "nyc": {
     "require": [
