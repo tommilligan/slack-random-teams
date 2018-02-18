@@ -8,10 +8,13 @@
   "license": "Apache-2.0",
   "private": false,
   "dependencies": {
+    "@aoberoi/passport-slack": "^1.0.5",
     "@slack/client": "^3.16.0",
     "body-parser": "^1.18.2",
     "dotenv-safe": "^4.0.4",
     "express": "^4.16.2",
+    "morgan": "^1.9.0",
+    "passport": "^0.4.0",
     "readable-id": "^1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
