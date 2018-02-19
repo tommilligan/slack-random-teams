@@ -22,18 +22,15 @@ export const channelUserProfiles = (channelId) => {
     });
 };
 
-export const tokenExchange = (channelId) => {
+export const tokenExchange = (code) => {
   // Get channel info
-  return web.channels.info(channelId)
+  return new WebClient().oauth.access(
+    process.env.SLACK_CLIENT_ID,
+    process.env.SLACK_CLIENT_SECRET,
+    code
+  )
     .then(res => {
-      const memberIds = res.channel.members;
-      // For each channel member, enrich to a profile
-      return Promise.all(memberIds.map(memberId => {
-        return web.users.profile.get({user: memberId})
-          .then(res => {
-            return res.profile;
-          });
-      }));
+      return res.access_token;
     });
 };
 

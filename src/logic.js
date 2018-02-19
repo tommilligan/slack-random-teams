@@ -10,32 +10,24 @@ import { channelUserProfiles, tokenExchange } from './services/slack';
 
 export function authGrant(req, res) {
   // Parse callback data into oauth token exchange format
-  var data = {
-    form: {
-      client_id: process.env.SLACK_CLIENT_ID,
-      client_secret: process.env.SLACK_CLIENT_SECRET,
-      code: req.query.code
-    }
-  };
-  tokenExchange(data)
-    .then(response => {
+  console.log(`Got OAuth redirect: ${req.query}`);
+  tokenExchange(req.query.code)
+    .then(accessToken => {
       // You are done.
       // If you want to get team info, you need to get the token here
-      console.log(response.data);
-      let token = response.body.access_token; // Auth token
-      console.log(`Got token ${token}`);
+      console.log(`Got token ${accessToken}`);
 
       var myData = new User({
         userId: '',
         teamId: '',
-        oauthToken: token
+        token: accessToken
       });
       myData.save()
         .catch(e => {
           console.log(`DBError: ${e}`);
           res.status(400).send('Unable to save to database');
         });
-
+      
       res.sendStatus(200);
     })
     .catch(e => {

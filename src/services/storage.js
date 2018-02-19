@@ -34,7 +34,7 @@ db.on('disconnected', function () {
 const srtSchema = new mongoose.Schema({
   userId: String,
   teamId: String,
-  oauthToken: String
+  token: String
 });
 
 export const User = mongoose.model('User', srtSchema);
