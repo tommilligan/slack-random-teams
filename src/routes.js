@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { verifySlack } from './middleware';
-import { randomTeams } from './logic';
+import { randomTeams, authGrant } from './logic';
 
 const applyRoutes = app => {
   // Metadata - open
@@ -10,6 +10,13 @@ const applyRoutes = app => {
     res.sendStatus(200);
   });
   app.use('/api/metadata', metadata);
+
+  // Authorisation - open
+  let auth = express.Router();
+  // Completes the OAuth flow.
+  auth.get('/slack/callback', authGrant);
+
+  app.use('/api/auth', auth);
 
   // Commands - require verification
   let commands = express.Router();
