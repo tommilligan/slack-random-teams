@@ -1,13 +1,12 @@
 import rp from 'request-promise';
 import rid from 'readable-id';
 
-import { tokenExchange } from './api';
 import { splitWords, randomlyAssign } from './utils';
 import { delayedResponder } from './responses';
 import { formatTeams } from './formats';
 
 import { User } from './services/storage';
-import { channelUserProfiles } from './api';
+import { channelUserProfiles, tokenExchange } from './services/slack';
 
 export function authGrant(req, res) {
   // Parse callback data into oauth token exchange format

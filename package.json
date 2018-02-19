@@ -42,7 +42,7 @@
     "start": "node dist/server.js",
     "compile": "babel src -d dist",
     "type": "yarn flow",
-    "test": "cross-env NODE_ENV=test nyc mocha -R spec test/",
+    "test": "cross-env NODE_ENV=test nyc mocha -R spec --exit test/",
     "dev": "nodemon -w src --exec \"babel-node src/server.js\""
   },
   "nyc": {

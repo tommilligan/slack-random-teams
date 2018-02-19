@@ -21,3 +21,19 @@ export const channelUserProfiles = (channelId) => {
       }));
     });
 };
+
+export const tokenExchange = (channelId) => {
+  // Get channel info
+  return web.channels.info(channelId)
+    .then(res => {
+      const memberIds = res.channel.members;
+      // For each channel member, enrich to a profile
+      return Promise.all(memberIds.map(memberId => {
+        return web.users.profile.get({user: memberId})
+          .then(res => {
+            return res.profile;
+          });
+      }));
+    });
+};
+
