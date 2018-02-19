@@ -1,5 +1,6 @@
 import rp from 'request-promise';
 import rid from 'readable-id';
+import { WebClient } from '@slack/client';
 
 import { splitWords, randomlyAssign } from './utils';
 import { delayedResponder } from './responses';
@@ -10,37 +11,39 @@ import { channelUserProfiles, tokenExchange } from './services/slack';
 
 export function authGrant(req, res) {
   // Parse callback data into oauth token exchange format
-  console.log(`Got OAuth redirect: ${req.query}`);
   tokenExchange(req.query.code)
-    .then(accessToken => {
-      // You are done.
-      // If you want to get team info, you need to get the token here
-      console.log(`Got token ${accessToken}`);
-
-      var myData = new User({
-        userId: '',
-        teamId: '',
-        token: accessToken
-      });
-      myData.save()
-        .catch(e => {
-          console.log(`DBError: ${e}`);
-          res.status(400).send('Unable to save to database');
+    .then(access_token => {
+      const web = new WebClient(access_token);
+      web.team.info()
+        .then(response => {
+          const team_id = response.team.id;
+          const user = new User({
+            access_token,
+            team_id
+          });
+          const q = {team_id};
+          console.log(`Removing query ${JSON.stringify(q)}`);
+          console.log(`Saving access token for team ${team_id}`);
+          console.log(`Saving user ${user}`);
+          User.remove(q).exec()
+            .then(() => {
+              user.save();
+              res.redirect(`https://${response.team.domain}.slack.com`);
+            });
         });
-      
-      res.sendStatus(200);
     })
     .catch(e => {
       const errorId = rid();
       console.error(`Error generated with ref: ${errorId}`);
       console.error(e);
+      res.sendStatus(500);
     });
 }
 
 export function randomTeams(req, res) {
   const invocation = req.body;
   const teamNames = splitWords(invocation.text);
-  const channel_id = invocation.channel_id;
+  const {channel_id} = invocation;
   console.info(`Requested teams '${teamNames.join(', ')}' in channel ${channel_id}`);
 
   // Fire off a fast initial response
@@ -50,11 +53,14 @@ export function randomTeams(req, res) {
   };
   res.json(initialBody);
 
+  // Get an authorised webclient
+  const webClient = req.webClient;
+
   // Set up a factory for delayed responses
   const delayedResponse = delayedResponder(invocation.response_url);
 
   // Get information about the source channel
-  channelUserProfiles(channel_id)
+  channelUserProfiles(webClient, channel_id)
     .then(userProfiles => {
       return userProfiles.map(userProfile => userProfile.real_name);
     })

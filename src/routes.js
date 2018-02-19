@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { verifySlack } from './middleware';
+import { verifySlack, attachSlashWebClient } from './middleware';
 import { randomTeams, authGrant } from './logic';
 
 const applyRoutes = app => {
@@ -21,6 +21,7 @@ const applyRoutes = app => {
   // Commands - require verification
   let commands = express.Router();
   commands.use(verifySlack);
+  commands.use(attachSlashWebClient);
   commands.post('/random-teams', randomTeams);
   app.use('/api/commands', commands);
 

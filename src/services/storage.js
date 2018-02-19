@@ -32,9 +32,8 @@ db.on('disconnected', function () {
 // Data models
 // Setup a data model for our users
 const srtSchema = new mongoose.Schema({
-  userId: String,
-  teamId: String,
-  token: String
+  access_token: String,
+  team_id: String
 });
 
 export const User = mongoose.model('User', srtSchema);
