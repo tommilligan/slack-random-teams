@@ -22,9 +22,7 @@ export function authGrant(req, res) {
             team_id
           });
           const q = {team_id};
-          console.log(`Removing query ${JSON.stringify(q)}`);
           console.log(`Saving access token for team ${team_id}`);
-          console.log(`Saving user ${user}`);
           User.remove(q).exec()
             .then(() => {
               user.save();

@@ -14,8 +14,9 @@ export function verifySlack (req, res, next) {
 }
 
 export function attachSlashWebClient (req, res, next) {
-  const q = {team_id: req.body.team_id};
-  console.log(`Requesting team: ${JSON.stringify(q)}`);
+  const {team_id} = req.body;
+  const q = {team_id};
+  console.log(`Setting up web client for team ${team_id}`);
   User.findOne(q).exec()
     .then(user => {
       console.log(user);

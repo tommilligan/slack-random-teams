@@ -9,6 +9,9 @@ node_js:
 install:
   - yarn
   - mv .env.test .env
+before_script:
+  - sleep 15
+  - mongo srt --eval 'db.createUser({user:"travis",pwd:"secret",roles:["readWrite"]});'
 script:
   - yarn test
 after_success:
