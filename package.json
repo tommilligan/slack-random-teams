@@ -10,7 +10,7 @@
   "dependencies": {
     "@slack/client": "^3.16.0",
     "body-parser": "^1.18.2",
-    "dotenv-safe": "^4.0.4",
+    "dotenv-safe": "^5.0.1",
     "express": "^4.16.2",
     "mongoose": "^5.0.6",
     "morgan": "^1.9.0",
