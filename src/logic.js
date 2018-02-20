@@ -7,7 +7,7 @@ import { delayedResponder } from './responses';
 import { formatTeams } from './formats';
 
 import { User } from './services/storage';
-import { channelUserProfiles, tokenExchange } from './services/slack';
+import { channelUsers, tokenExchange } from './services/slack';
 
 export function authGrant(req, res) {
   // Parse callback data into oauth token exchange format
@@ -55,9 +55,9 @@ export function randomTeams(req, res) {
   const delayedResponse = delayedResponder(invocation.response_url);
 
   // Get information about the source channel
-  channelUserProfiles(webClient, channel_id)
-    .then(userProfiles => {
-      return userProfiles.map(userProfile => userProfile.real_name);
+  channelUsers(webClient, channel_id)
+    .then(users => {
+      return users.map(user => user.profile.real_name);
     })
     // Actually do team assignment
     .then(memberNames => {
