@@ -14,7 +14,13 @@ const applyRoutes = app => {
   // Authorisation - open
   let auth = express.Router();
   // Completes the OAuth flow.
-  auth.get('/slack', authGrant);
+  auth.get('/slack', (req, res, next) => {
+    if (req.query.error) {
+      res.sendStatus(401);
+    } else {
+      next();
+    }
+  }, authGrant);
 
   app.use('/api/auth', auth);
 
