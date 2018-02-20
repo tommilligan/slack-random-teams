@@ -10,8 +10,7 @@ install:
   - yarn
   - mv .env.test .env
 before_script:
-  - sleep 15
-  - mongo db --eval 'db.createUser({user:"travis",pwd:"secret",roles:["readWrite"]});'
+  - sleep 15 # to allow mongo to spin up
 script:
   - yarn test
 after_success:

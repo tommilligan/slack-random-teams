@@ -31,9 +31,7 @@ export function authGrant(req, res) {
         });
     })
     .catch(e => {
-      const errorId = rid();
-      console.error(`Error generated with ref: ${errorId}`);
-      console.error(e);
+      console.error(`Error during token exchenge: ${e}`);
       res.sendStatus(500);
     });
 }
@@ -44,15 +42,14 @@ export function randomTeams(req, res) {
   const {channel_id} = invocation;
   console.info(`Requested teams '${teamNames.join(', ')}' in channel ${channel_id}`);
 
-  // Fire off a fast initial response
+  // Get an authorised webclient
+  const webClient = req.webClient;
+  // Otherwise, fire off a fast initial response
   const initialBody = {
     response_type: 'in_channel',
     text: `Generating ${teamNames.length} teams...`
   };
   res.json(initialBody);
-
-  // Get an authorised webclient
-  const webClient = req.webClient;
 
   // Set up a factory for delayed responses
   const delayedResponse = delayedResponder(invocation.response_url);

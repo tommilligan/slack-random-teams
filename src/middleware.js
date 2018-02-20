@@ -16,12 +16,22 @@ export function verifySlack (req, res, next) {
 export function attachSlashWebClient (req, res, next) {
   const {team_id} = req.body;
   const q = {team_id};
-  console.log(`Setting up web client for team ${team_id}`);
+  console.log(`Getting record for team ${team_id}`);
   User.findOne(q).exec()
     .then(user => {
-      console.log(user);
-      const webClient = new WebClient(user.access_token);
-      req.webClient = webClient;
-      next();
+      if (user === null) {
+        console.log(`No record found for ${team_id}`);
+        const body = {
+          response_type: 'ephemeral',
+          text: 'This workspace is unauthorised. Please try reinstalling the app.'
+        };
+        // I'd respond with a 401 but Slack doesn't allow it
+        res.json(body);
+      } else {
+        console.log(`Setting up web client for ${team_id}`);
+        const webClient = new WebClient(user.access_token);
+        req.webClient = webClient;
+        next();
+      }
     });
 }

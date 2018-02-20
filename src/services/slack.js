@@ -15,6 +15,10 @@ export const channelUserProfiles = (webClient, channelId) => {
             return res.profile;
           });
       }));
+    })
+    .catch(e => {
+      console.error(`Error getting channel user profiles: ${e}`);
+      throw e;
     });
 };
 
@@ -25,6 +29,10 @@ export const tokenExchange = (code) => {
     process.env.SLACK_CLIENT_SECRET,
     code
   )
-    .then(res => res.access_token);
+    .then(res => res.access_token)
+    .catch(e => {
+      console.error(`Error during token exchenge: ${e}`);
+      throw e;
+    });
 };
 
