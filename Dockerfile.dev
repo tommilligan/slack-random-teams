@@ -1,11 +1,11 @@
-FROM node:9.6
+FROM node:8.9-alpine
 
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install app dependencies first (cache as docker layer)
-COPY package.json yarn.lock .babelrc .eslintrc.js .flowconfig .env.example ./
+COPY package.json yarn.lock .babelrc .env.example src .eslintrc.js .flowconfig ./
 RUN yarn --pure-lockfile
 
 EXPOSE 3000
