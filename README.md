@@ -27,3 +27,12 @@ Call the slash command `random-teams` follwed by a list of space separated team 
 /random-teams For Against
 ```
 
+## Call flow
+
+When installing, the user is redirected to Slack to login and accept permissions.
+
+When permissions are confirmed/denied, the user is redirected to `/api/auth/slack/callback`.
+
+The app then requests a permenant OAuth `token` and persists it to storage, along with `team_id`.
+
+When a slash command is called, the endpoint middleware attaches an authorised Slack api `WebClient` to the request object. A fast response is sent directly back - the web client is then used to access further resourses and respond slowly to the `response_url` provided.
