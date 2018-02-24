@@ -47,8 +47,7 @@ export const splitWords = text => {
  * @param {any[]} members 
  */
 export const randomlyAssign = (labels, members) => {
-  labels = shuffle(labels);
-  const chunkedMembers = chunkArray(members, labels.length);
+  const chunkedMembers = chunkArray(shuffle(members), labels.length);
   const assignments = labels.map((label, i) => {
     return [label, chunkedMembers[i]];
   });
