@@ -14,7 +14,7 @@ const applyRoutes = app => {
   // Authorisation - open
   let auth = express.Router();
   // Completes the OAuth flow.
-  auth.get('/slack', (req, res, next) => {
+  auth.get('/slack/callback', (req, res, next) => {
     if (!req.query.code) {
       res.sendStatus(401);
     } else {
