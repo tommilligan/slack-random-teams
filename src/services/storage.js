@@ -36,4 +36,38 @@ const srtSchema = new mongoose.Schema({
   team_id: String
 });
 
-export const User = mongoose.model('User', srtSchema);
+const User = mongoose.model('User', srtSchema);
+
+/**
+ * Looks up a user record by team_id.
+ * Permissions are scoped by team, so any person's token will do.
+ * @param {String} team_id Team id of the user
+ * @returns {Promise<user>} The user object if found,
+ * @throws {Error} If a user is not found, or there was an error with the service
+ */
+export function deserializeUser(team_id) {
+  const q = {team_id};
+  console.log(`Deserialising user for team ${team_id}`);
+  return User.findOne(q).exec()
+    .then(user => {
+      if (user === null) {
+        throw Error(`No user found for ${team_id}`);
+      } else {
+        return user;
+      }
+    });
+}
+
+/**
+ * Serialise a user to storage.
+ * @param {Object} user User object to serialise. See `User` for definition
+ * @returns {Promise<user>} Promise that resolves the saved user.
+ */
+export function serializeUser(user) {
+  const {team_id} = user;
+  console.log(`Saving access token for team ${team_id}`);
+  User.remove({team_id: user.team_id}).exec()
+    .then(() => {
+      return new User(user).save().exec();
+    });
+}

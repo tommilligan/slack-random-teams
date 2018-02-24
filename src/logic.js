@@ -6,7 +6,7 @@ import { splitWords, randomlyAssign } from './utils';
 import { delayedResponder } from './responses';
 import { formatTeams } from './formats';
 
-import { User } from './services/storage';
+import { serializeUser } from './services/storage';
 import { channelUsers, tokenExchange } from './services/slack';
 
 export function authGrant(req, res) {
@@ -17,15 +17,12 @@ export function authGrant(req, res) {
       web.team.info()
         .then(response => {
           const team_id = response.team.id;
-          const user = new User({
+          const user = {
             access_token,
             team_id
-          });
-          const q = {team_id};
-          console.log(`Saving access token for team ${team_id}`);
-          User.remove(q).exec()
+          };
+          serializeUser(user)
             .then(() => {
-              user.save();
               res.redirect(`https://${response.team.domain}.slack.com`);
             });
         });
