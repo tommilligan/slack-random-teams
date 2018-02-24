@@ -1,4 +1,4 @@
-FROM node:9.5
+FROM node:9.6
 
 # Create app directory
 RUN mkdir -p /usr/src/app
@@ -7,7 +7,6 @@ WORKDIR /usr/src/app
 # Install app dependencies first (cache as docker layer)
 COPY ./ ./
 RUN yarn --pure-lockfile
-RUN yarn compile
 
 EXPOSE 3000
-CMD [ "yarn", "start" ]
+CMD [ "yarn", "dev" ]

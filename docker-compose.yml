@@ -3,13 +3,17 @@ services:
   app:
     container_name: app
     restart: always
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     env_file:
       - .env
     links:
       - mongo
+    volumes:
+      - "./src:/usr/src/app/src"
   mongo:
     container_name: mongo
     image: mongo
