@@ -10,6 +10,8 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    evironment:
+      - MONGODB_URI=mongodb://mongo:27017/db
     links:
       - mongo
     volumes:
