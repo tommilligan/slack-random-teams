@@ -5,7 +5,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install app dependencies first (cache as docker layer)
-COPY ./ ./
+COPY package.json yarn.lock .babelrc .env.example ./
 RUN yarn --pure-lockfile
 RUN yarn compile
 
