@@ -5,7 +5,7 @@ services:
   - mongodb
 language: node_js
 node_js:
-  - "9"
+  - "8"
 install:
   - yarn
   - mv .env.test .env
@@ -17,11 +17,11 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
   - |
     if [[ $TRAVIS_BRANCH == "master" ]]; then
-      yarn compile
-      docker build -t slack-random-teams .
-      docker tag slack-random-teams registry.heroku.com/slack-random-teams/web
-      docker login -u "$HEROKU_USER" -p "$HEROKU_API_KEY" registry.heroku.com
-      docker push registry.heroku.com/slack-random-teams/web
+      docker build -t slack-random-teams . &&
+      docker tag slack-random-teams registry.heroku.com/slack-random-teams/web &&
+      docker login -u "$HEROKU_USER" -p "$HEROKU_API_KEY" registry.heroku.com &&
+      docker push registry.heroku.com/slack-random-teams/web ||
+      exit 1
     fi
 notifications:
   email: false
