@@ -8,12 +8,12 @@ describe('formats', function() {
       var input = [['foo', ['a', 'b']], ['bar', ['c', 'd']]];
       var actual = subject.formatTeams(input);
       expect(actual).to.equal(`_Your teams are:_
-  *foo*
-  a
-  b
-  *bar*
-  c
-  d`);
+*foo*
+a
+b
+*bar*
+c
+d`);
     });
   });
 });

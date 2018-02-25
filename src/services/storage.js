@@ -53,7 +53,7 @@ export function deserializeUser(team_id) {
       if (user === null) {
         throw Error(`No user found for ${team_id}`);
       } else {
-        return user;
+        return user.toObject();
       }
     });
 }
@@ -61,13 +61,13 @@ export function deserializeUser(team_id) {
 /**
  * Serialise a user to storage.
  * @param {Object} user User object to serialise. See `User` for definition
- * @returns {Promise<user>} Promise that resolves the saved user.
+ * @returns {Promise<user>} Promise that resolves the saved User model.
  */
 export function serializeUser(user) {
   const {team_id} = user;
   console.log(`Saving access token for team ${team_id}`);
-  User.remove({team_id: user.team_id}).exec()
+  return User.remove({team_id: user.team_id}).exec()
     .then(() => {
-      return new User(user).save().exec();
+      return new User(user).save();
     });
 }
