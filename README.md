@@ -10,7 +10,7 @@ A slack app for generating random teams in your workspace.
 
 ## Install
 
-[![Add to Slack](https://platform.slack-edge.com/img/add_to_slack.png)](https://slack.com/oauth/authorize?client_id=316826906230.315357059952&scope=commands,channels:read,groups:read,users:read,team:read)
+[![Add to Slack](https://platform.slack-edge.com/img/add_to_slack.png)](https://slack.com/oauth/authorize?client_id=316826906230.315357059952&scope=commands,channels:read,groups:read,users:read,team:read) [![Greenkeeper badge](https://badges.greenkeeper.io/tommilligan/slack-random-teams.svg)](https://greenkeeper.io/)
 
 > This app is still under development, and may be unstable
 
