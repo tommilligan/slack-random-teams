@@ -1,19 +1,22 @@
-
 sudo: required
 services:
   - docker
   - mongodb
 language: node_js
 node_js:
-  - "8"
+  - '8'
+before_install:
+  - yarn global add greenkeeper-lockfile
+  - greenkeeper-lockfile-update
 install:
-  - yarn
+  - yarn --frozen-lockfile
   - mv .env.test .env
 before_script:
   - sleep 15 # to allow mongo to spin up
 script:
   - yarn test
 after_success:
+  - greenkeeper-lockfile-upload
   - bash <(curl -s https://codecov.io/bash)
   - |
     if [[ $TRAVIS_BRANCH == "master" ]]; then
