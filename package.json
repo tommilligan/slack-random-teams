@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "private": false,
   "dependencies": {
-    "@slack/client": "^4.8.0",
+    "@slack/client": "^5.0.1",
     "body-parser": "^1.18.2",
     "dotenv-safe": "^6.1.0",
     "express": "^4.16.2",
