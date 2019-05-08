@@ -17,7 +17,8 @@
     "readable-id": "^1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "shuffle-array": "^1.0.1"
+    "shuffle-array": "^1.0.1",
+    "snyk": "^1.162.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -46,7 +47,9 @@
     "compile": "babel src -d dist",
     "type": "yarn flow",
     "test": "cross-env NODE_ENV=test nyc mocha -R spec --exit test/**",
-    "dev": "nodemon -w src --exec \"babel-node src/server.js\""
+    "dev": "nodemon -w src --exec \"babel-node src/server.js\"",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "nyc": {
     "require": [
@@ -58,5 +61,6 @@
     ],
     "sourceMap": false,
     "instrument": false
-  }
+  },
+  "snyk": true
 }
