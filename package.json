@@ -12,7 +12,7 @@
     "body-parser": "^1.18.2",
     "dotenv-safe": "^6.1.0",
     "express": "^4.16.2",
-    "mongoose": "^5.0.6",
+    "mongoose": "^5.6.1",
     "morgan": "^1.9.0",
     "readable-id": "^1.0.0",
     "request": "^2.83.0",
