@@ -36,7 +36,7 @@
     "eslint-plugin-mocha": "^5.2.0",
     "flow-bin": "^0.90.0",
     "istanbul": "^0.4.5",
-    "mocha": "^6.0.0",
+    "mocha": "^7.0.1",
     "mocha-eslint": "^5.0.0",
     "nodemon": "^1.15.0",
     "nyc": "^13.1.0"
